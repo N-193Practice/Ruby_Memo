@@ -1,7 +1,8 @@
 require 'csv'
 
+# 新規
 def create_new_memo
-  puts "新しいメモを入力してください。Ctrl+Dで確定:"
+  puts "新しいメモを入力してください. Ctrl+Dで確定:"
   new_memo = ""
   while (line = $stdin.gets)
     break if line.chomp == "\x04"  # Ctrl+Dを検出してループを抜ける
@@ -10,14 +11,15 @@ def create_new_memo
 
   puts "新しいファイル名を入力してください："
   file_name = gets.chomp
+  new_csv_filename = "#{file_name}.csv"  # ファイル名に .csv 拡張子を追加
 
-  CSV.open('memos.csv', 'a') do |csv|
+  CSV.open(new_csv_filename, 'w') do |csv|
     csv << [file_name, new_memo]
   end
-
   puts "メモが保存されました。"
 end
 
+# 編集時
 def edit_existing_memo
   puts "編集するメモを選んでください："
   # 既存のファイルを読み込み、メモを表示
