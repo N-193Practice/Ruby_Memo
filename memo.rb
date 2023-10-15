@@ -13,6 +13,13 @@ def create_new_memo
   file_name = gets.chomp
   new_csv_filename = "#{file_name}.csv"  # ファイル名に .csv 拡張子を追加
 
+  # memos.csv ファイルが存在しない場合は新規に作成
+  unless File.exist?('memos.csv')
+    CSV.open('memos.csv', 'w') do |csv|
+      csv << ["Title", "Content"]
+    end
+  end
+
   CSV.open(new_csv_filename, 'w') do |csv|
     csv << [file_name, new_memo]
   end
