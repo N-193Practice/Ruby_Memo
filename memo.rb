@@ -28,44 +28,33 @@ end
 
 # 編集時
 def edit_existing_memo
-  puts "編集するメモを選んでください："
-  # 既存のファイルを読み込み、メモを表示
-  memos = []
-  CSV.foreach('memos.csv') do |row|
-    memos << row
-  end
+  puts "編集するメモのファイル名を入力してください："
+  file_name = gets.chomp
+  target_file = "#{file_name}.csv"
 
-  memos.each_with_index do |memo, index|
-    puts "#{index + 1}: #{memo[0]}"
-  end
+  if File.exist?(target_file)
+    puts "現在の内容は以下の通りです："
+    current_content = CSV.read(target_file)[0][1]
+    puts current_content
 
-  puts "編集したいメモの番号を入力してください："
-  memo_number = gets.chomp.to_i
-
-  if memo_number <= 0 || memo_number > memos.length
-    puts "無効な番号です。"
-    return
-  end
-
-  puts "新しい内容を入力してください。Ctrl+Dで確定:"
-  new_content = ""
-  while (line = $stdin.gets)
-    break if line.chomp == "\x04"  # Ctrl+Dを検出してループを抜ける
-    new_content += line
-  end
-
-  memo = memos[memo_number - 1]
-  memo[1] = new_content
-
-  CSV.open('memos.csv', 'w') do |csv|
-    memos.each do |m|
-      csv << m
+    puts "新しい内容を入力してください。Ctrl+Dで確定:"
+    new_content = ""
+    while (line = $stdin.gets)
+      break if line.chomp == "\x04"  # Ctrl+Dを検出してループを抜ける
+      new_content += line
     end
-  end
 
-  puts "メモが編集されました。"
+    # ファイルの内容を更新
+    CSV.open(target_file, 'w') do |csv|
+      csv << [file_name, new_content]
+    end
+    puts "メモが編集されました。"
+  else
+    puts "指定したファイルが見つかりません。"
+  end
 end
 
+# ユーザーとのやり取り
 puts "メモアプリ - 1: 新規作成, 2: 編集"
 user_choice = gets.chomp.to_i
 
